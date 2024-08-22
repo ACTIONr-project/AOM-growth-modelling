@@ -4,7 +4,7 @@ This is a Repository of R Resources to monitor the growth of ammonia oxidiser st
 I include here the R project file, the R script in a form of an .Rmd file, along with an R Markdown HTML file, and the outputs produced from the script
 
 You can find the .html file if you follow this: 
-[LINK] ()
+[LINK] (https://kanellopal.github.io/AOM-growth-modelling/AOM_Growth_Model.html)
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 **DISCLAIMER.**
