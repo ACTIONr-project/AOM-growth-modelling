@@ -163,6 +163,7 @@ Step 6: We can calculate the maximum specific growth rate from the activity data
 # We visually assess the activity plot to pin down the exponential growth phase
 print(activity_line_plot_with_model)
 ```
+
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 # We assume that the exponential growth phase lasts from 40 h - 175 h, so we isolate these data
 library(dplyr)
@@ -172,22 +173,33 @@ data_exponential <- filter(data_routine, between(Time, 40, 175))
 library(SciViews)
 data_exponential_ln <- mutate(data_exponential, Nitrite = ln(Nitrite))
 
-# We plot the data 
+# We will evaluate the quality of th elinear regression
+# The maximum specific growth rate is congruent with the slope coefficient of the linear regression
+linear_regression_report <- summary(lm(Nitrite ~ Time, data = data_exponential_ln))
+μmax <- round(linear_regression_report$coefficients[2,1],3)
+μmax_std_error <- round(linear_regression_report$coefficients[2,2],3)
+linear_regression_report
+μmax
+μmax_std_error
+
+# We plot the data and we will incorporate the maximum specific growth rate value in the plot
 line_plot_exponential_ln <- ggplot(data_exponential_ln, aes(x = Time, y = Nitrite)) +
   theme_light() + 
   geom_point(aes(colour = Generation)) + 
   labs(y = "ln[Nitrite]", x = "Time (Hours)") + 
   theme(axis.title = element_text(size = 28), axis.text = element_text(size = 24), legend.text = element_text(size = 20), legend.title = element_text(size = 20)) + 
   scale_color_viridis(option = "D", discrete = T) +
-  stat_smooth(method = "lm", col = "blue", se = TRUE, linewidth = 1, linetype = "dashed")
+  stat_smooth(method = "lm", col = "blue", se = TRUE, linewidth = 1, linetype = "dashed") + 
+  geom_text(x = 125, y = 4.2, label = paste("μmax =", μmax, "±", μmax_std_error), colour = "blue", size = 6, hjust = 0) + 
+  geom_text(x = 125, y = 3.80, label = paste("R-squared = ", round(linear_regression_report$adj.r.squared,2)), colour = "blue", size = 6, hjust = 0)
 
 print(line_plot_exponential_ln)
 
-# We will evaluate the quality of th elinear regression
-linear_regression_report <- summary(lm(Nitrite ~ Time, data = data_exponential_ln))
-linear_regression_report
-# The maximum specific growth rate is congruent with the slope coefficient of the linear regression
+# Let's save the plot. cairo_pdf() had some weird behaviour, so we can use ggsave(), which usually handles fonts in ggplots better
+ggsave("Maximum_growth_rate.pdf", plot = line_plot_exponential_ln, width = 10, height = 10)
+
 ```
+
 Thanks a lot for using this code! 
 
 Remember to always cite the author of the code you use!
